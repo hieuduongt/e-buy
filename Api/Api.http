@@ -1,0 +1,6 @@
+@E_BUY_HostAddress = http://localhost:5076
+
+GET {{E_BUY_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
