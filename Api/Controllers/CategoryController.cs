@@ -20,31 +20,29 @@ namespace Api.Controllers
         }
 
         [HttpPost]
-        [Route("create")]
         public async Task<ActionResult<EBuyResponse>> Create([FromBody] CategoryRequestDto request)
         {
             var result = await _categoryServices.Create(request);
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("update")]
+        [HttpPut]
         public async Task<ActionResult<EBuyResponse>> Update([FromBody] CategoryRequestDto request)
         {
             var result = await _categoryServices.Update(request);
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("delete/{id}")]
+        [HttpDelete]
+        [Route("{id}")]
         public async Task<ActionResult<EBuyResponse>> Delete(Guid id)
         {
             var result = await _categoryServices.Delete(id);
             return Ok(result);
         }
 
-        [HttpPost]
-        [Route("archive/{id}")]
+        [HttpPatch]
+        [Route("{id}")]
         public async Task<ActionResult<EBuyResponse>> Archive(Guid id)
         {
             var result = await _categoryServices.Archive(id);
@@ -52,7 +50,6 @@ namespace Api.Controllers
         }
 
         [HttpGet]
-        [Route("get-all")]
         public async Task<ActionResult<EBuyResponse<Paginated<CategoryResponseDto>>>> GetAll(string search = "", int page = 1, int pageSize = 20)
         {
             var result = await _categoryServices.GetAll(search, page, pageSize);

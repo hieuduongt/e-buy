@@ -165,7 +165,9 @@ namespace Application.CategoryServices
         {
             try
             {
-                return await _dbContext.Categories.CountAsync(
+                return await _dbContext.Categories
+                    .Where(c => !c.IsDeleted && !c.IsArchived)
+                    .CountAsync(
                     c => c.Name.ToLower().Contains(searchText)
                 || c.Description.ToLower().Contains(searchText)
                 || c.UrlPath.ToLower().Contains(searchText)
