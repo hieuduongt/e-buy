@@ -123,6 +123,7 @@ namespace Application.CategoryServices
             {
                 return EBuyResponse<Paginated<CategoryResponseDto>>.Failed(new List<string> { "Không tìm thấy danh mục nào!" });
             }
+
             var totalRecords = await GetNumberOfCategoriesBySearchText(search.ToLower());
             return new EBuyResponse<Paginated<CategoryResponseDto>>
             {
