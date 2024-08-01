@@ -23,7 +23,18 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseCors(builder =>
+{
+    builder
+    .SetIsOriginAllowedToAllowWildcardSubdomains()
+    .WithOrigins(
+        "http://localhost:3000",
+        "https://localhost:3000"
+        )
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .AllowCredentials();
+});
 app.UseAuthorization();
 
 app.MapControllers();
