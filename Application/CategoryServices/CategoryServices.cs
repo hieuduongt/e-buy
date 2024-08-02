@@ -60,7 +60,7 @@ namespace Application.CategoryServices
         }
 
         public async Task<EBuyResponse> Delete(Guid id)
-        {
+        { 
             var result = await _dbContext.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (result == null || result.IsDeleted || result.IsArchived)
             {

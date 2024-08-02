@@ -1,4 +1,6 @@
 using Application.CategoryServices;
+using Application.ProductServices;
+using E_BUY.ImageService;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -6,6 +8,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddDbContext<AppDBContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("Development")));
 builder.Services.AddControllers();
