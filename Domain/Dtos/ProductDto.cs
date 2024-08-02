@@ -54,7 +54,7 @@ namespace Domain.Dtos
 
         [Required(ErrorMessage = "Currency is required")]
         public Currency Currency { get; set; }
-        public List<Image> image { get; set; }
+        public List<Image>? image { get; set; } 
         public int SoldNumber { get; set; }
         public Guid CategoryId { get; set; }
     }

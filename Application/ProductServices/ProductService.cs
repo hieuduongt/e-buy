@@ -37,15 +37,15 @@ namespace Application.ProductServices
 
         public async Task<EBuyResponse> Create(ProductRequesDto productRequesDto)
         {
-            if (productRequesDto == null)
+            if (productRequesDto.image == null)
             {
-                return EBuyResponse.Failed(
-                    new List<string> { "Invalid person data" }
-                );
-            }
-            else
-            {
-                var Newproduct = new Product
+                productRequesDto.image = [new Image
+                    {
+                    Id = new Guid(),
+                       Url = "https://img.pikbest.com/origin/09/41/85/916pIkbEsTzRC.jpg!w700wp",
+                       ProductId = productRequesDto.Id
+                    }];
+                var NewproductNotImage = new Product
                 {
                     CategoryId = productRequesDto.CategoryId,
                     Id = productRequesDto.Id,
@@ -54,7 +54,7 @@ namespace Application.ProductServices
                     Quantity = productRequesDto.Quantity,
                     OriginalPrice = productRequesDto.OriginalPrice,
                     SalePrice = productRequesDto.SalePrice,
-                    Images = productRequesDto.image,
+                    Images =productRequesDto.image,
                     SoldNumber = productRequesDto.SoldNumber,
                     Currency = productRequesDto.Currency,
                     CreatedDate = DateTime.UtcNow,
@@ -62,22 +62,42 @@ namespace Application.ProductServices
                     IsDeleted = false,
                     UpdatedDate = DateTime.UtcNow
                 };
-                await _dbContext.Products.AddAsync(Newproduct);
+                await _dbContext.Products.AddAsync(NewproductNotImage);
                 await _dbContext.SaveChangesAsync();
                 return EBuyResponse.Success();
             }
+            var Newproduct = new Product
+            {
+                CategoryId = productRequesDto.CategoryId,
+                Id = productRequesDto.Id,
+                Name = productRequesDto.Name,
+                Description = productRequesDto.Description,
+                Quantity = productRequesDto.Quantity,
+                OriginalPrice = productRequesDto.OriginalPrice,
+                SalePrice = productRequesDto.SalePrice,
+                Images = productRequesDto.image,
+                SoldNumber = productRequesDto.SoldNumber,
+                Currency = productRequesDto.Currency,
+                CreatedDate = DateTime.UtcNow,
+                IsArchived = false,
+                IsDeleted = false,
+                UpdatedDate = DateTime.UtcNow
+            };
+            await _dbContext.Products.AddAsync(Newproduct);
+            await _dbContext.SaveChangesAsync();
+            return EBuyResponse.Success();
         }
 
         public async Task<EBuyResponse> Delete(Guid productId)
         {
-            var result = await _dbContext.Products.FirstOrDefaultAsync(p=>p.Id == productId);
+            var result = await _dbContext.Products.FirstOrDefaultAsync(p => p.Id == productId);
             if (result == null || result.IsDeleted || result.IsArchived)
             {
                 return EBuyResponse.Failed(new List<string> { "Không tìm thấy sản phẩm này!" });
             }
             result.IsDeleted = true;
             result.UpdatedDate = DateTime.UtcNow;
-             _dbContext.Products.Update(result);
+            _dbContext.Products.Update(result);
             await _dbContext.SaveChangesAsync();
             return EBuyResponse.Success();
 
@@ -107,8 +127,8 @@ namespace Application.ProductServices
 
         public async Task<EBuyResponse<ProductResponseDto>> Get(Guid productId)
         {
-            var results = await _dbContext.Products.Where(p=>!p.IsDeleted && !p.IsArchived)
-                .Where(p => p.Id == productId).Select(p => new ProductResponseDto
+            var results = await _dbContext.Products.Where(p => !p.IsDeleted && !p.IsArchived && p.Id == productId)
+                .Select(p => new ProductResponseDto
                 {
                     Id = p.Id,
                     Name = p.Name,
@@ -125,11 +145,11 @@ namespace Application.ProductServices
                     SoldNumber = p.SoldNumber,
                     Category = p.Category,
                 }).FirstOrDefaultAsync();
-            if(results == null)
+            if (results == null)
             {
-                return EBuyResponse<ProductResponseDto>.Failed(new List<string> { "khong có sản phẩm nào trùng với id trên" });
+                return EBuyResponse<ProductResponseDto>.Failed(new List<string> { "Không tìm thấy sản phẩm này!" });
             }
-            return  EBuyResponse<ProductResponseDto>.Success(results);
+            return EBuyResponse<ProductResponseDto>.Success(results);
         }
 
         public async Task<EBuyResponse<Paginated<ProductResponseDto>>> GetAll(string search, int page, int pageSize)
@@ -137,8 +157,6 @@ namespace Application.ProductServices
             var resultsSeach = await _dbContext.Products.Where(p => !p.IsDeleted && !p.IsArchived)
                                             .Where(p => p.Name.ToLower().Contains(search.ToLower()) ||
                                                         p.Description.ToLower().Contains(search.ToLower()) ||
-                                                        p.CreatedDate.ToString().ToLower().Equals(search.ToLower()) ||
-                                                        p.Quantity.ToString().Contains(search.ToLower()) ||
                                                         (p.Category != null && p.Category.Name.ToLower().Contains(search.ToLower())) ||
                                                         p.UpdatedDate.ToString().ToLower().Equals(search.ToLower()) ||
                                                         p.Images.Any(i => i.Url.ToLower().Contains(search.ToLower())))
@@ -146,7 +164,7 @@ namespace Application.ProductServices
                                                         .Take(pageSize)
                                                         .Select(p => new ProductResponseDto
                                                         {
-                                                            Id  = p.Id,
+                                                            Id = p.Id,
                                                             Name = p.Name,
                                                             Description = p.Description,
                                                             Quantity = p.Quantity,
@@ -164,25 +182,23 @@ namespace Application.ProductServices
 
             if (resultsSeach.Count == 0)
             {
-                return EBuyResponse<Paginated<ProductResponseDto>>.Failed(new List<string> { "Không tim thấy sản phẩm nào" });
+                return EBuyResponse<Paginated<ProductResponseDto>>.Failed(new List<string> { "Không tìm thấy sản phẩm nào" });
             }
-            else
-            {
-                var totalRecords = await GetNumberOfProductBySearchText(search.ToLower());
 
-                return new EBuyResponse<Paginated<ProductResponseDto>>
+            var totalRecords = await GetNumberOfProductBySearchText(search.ToLower());
+
+            return new EBuyResponse<Paginated<ProductResponseDto>>
+            {
+                Code = 200,
+                Result = new Paginated<ProductResponseDto>
                 {
-                    Code = 200,
-                    Result = new Paginated<ProductResponseDto>
-                    {
-                        Page = page,
-                        PageSize = pageSize,
-                        TotalPages = (totalRecords + pageSize - 1) / pageSize,
-                        Items = resultsSeach
-                    },
-                    IsSuccess = true
-                };
-            }
+                    Page = page,
+                    PageSize = pageSize,
+                    TotalPages = (totalRecords + pageSize - 1) / pageSize,
+                    Items = resultsSeach
+                },
+                IsSuccess = true
+            };
         }
         public async Task<int> GetNumberOfProductBySearchText(string search)
         {
