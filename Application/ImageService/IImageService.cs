@@ -15,6 +15,5 @@ namespace E_BUY.ImageService
 
         public Task<EBuyResponse> Delete(Guid imgId);
 
-
     }
 }
