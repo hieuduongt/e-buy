@@ -11,20 +11,11 @@ namespace Domain.Dtos
     {
         public Guid Id { get; set; }
         public string Url { get; set; }
-        public Guid ProductId { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public bool IsDeleted { get; set; }
+        public bool InUse { get; set; }
         public bool IsArchived { get; set; }
-    }
-    public class ImageRequestDto
-    {
-        public Guid Id { get; set; }
-        public string Url { get; set; }
-        public Guid ProductId { get; set; }
-        public DateTime CreatedDate { get; set; }
-        public DateTime UpdatedDate { get; set; }
-        public bool IsDeleted { get; set; }
-        public bool IsArchived { get; set; }
+        public Guid? ProductId { get; set; }
     }
 }

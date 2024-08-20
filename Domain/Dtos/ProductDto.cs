@@ -12,7 +12,7 @@ using static Shared.Common.Enum;
 
 namespace Domain.Dtos
 {
-    public  class ProductResponseDto
+    public class ProductResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; }
@@ -23,39 +23,43 @@ namespace Domain.Dtos
         public Currency Currency { get; set; }
         public int SoldNumber { get; set; }
         public Category Category { get; set; }
-        public List<Image> image { get; set; }
+        public List<Image> Images { get; set; }
+        public List<Like> Likes { get; set; }
         public DateTime CreatedDate { get; set; }
         public DateTime UpdatedDate { get; set; }
         public bool IsDeleted { get; set; }
         public bool IsArchived { get; set; }
 
+
     }
     public class ProductRequesDto
     {
         public Guid Id { get; set; }
-        [Required (ErrorMessage = "Name is required")]
-        [StringLength(1000,ErrorMessage = "Name cannot be longer than 1000 characters.")]
-        [RegularExpression(@"^[a-zA-Z0-9\s\-,\(\)\'\""/]*$", ErrorMessage = "Name cannot contain special characters.")]
+
+        [Required(ErrorMessage = "Tên Không được để trống !")]
+        [StringLength(1000, ErrorMessage = "Tên không được dài quá 100 kí tự.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-,\(\)\'\""/]*$", ErrorMessage = "Tên không được chứa kí tự dặc biệt.")]
         public string Name { get; set; }
 
-        [RegularExpression(@"^[a-zA-Z0-9\s\-,\(\)\.\%\!""/:]*$", ErrorMessage = "Description cannot contain special characters.")]
-        [StringLength(999, ErrorMessage = "Name cannot be longer than 999 characters.")]
+        [RegularExpression(@"^[a-zA-Z0-9\s\-,\(\)\.\%\!""/:]*$", ErrorMessage = "Miêu tả sản phẩm không được chứa kí tự dặc biệt.")]
+        [StringLength(999, ErrorMessage = "Miêu tả sản phẩm không được vượt quá 999 kí tự .")]
         public string Description { get; set; }
-        [Required(ErrorMessage = "Quantity is required")]
-        [Range(1, 99999, ErrorMessage = "Age must be a natural number between 1 and 99999.")]
 
+        [Required(ErrorMessage = "Số lượng không được để trống ! ")]
+        [Range(1, 99999, ErrorMessage = "Số lượng phải lớn hơn 0 , giới hạn là 9999 sản phẩm .")]
         public int Quantity { get; set; }
 
-        [Required(ErrorMessage = "OriginalPrice is required")]
-        [Range(1, 9999999999, ErrorMessage = "OriginalPrice must be a natural number between 1 and 9999999999.")]
-
+        [Required(ErrorMessage = "Giá gốc không được để trống ! ")]
+        [Range(1, 9999999999, ErrorMessage = "Giá gốc phải lớn hơn 0 ")]
         public double OriginalPrice { get; set; }
+
+        [Required(ErrorMessage = "giá bán không được để trống ! ")]
+        [Range(1, 9999999999, ErrorMessage = "Giá bán phải lớn hơn 0 ")]
         public double SalePrice { get; set; }
 
-        [Required(ErrorMessage = "Currency is required")]
+        [Required(ErrorMessage = "Đơn vị tiền không được bỏ trống ! ")]
         public Currency Currency { get; set; }
-        public List<Image>? image { get; set; } 
-        public int SoldNumber { get; set; }
+        public List<Image>? Images { get; set; }
         public Guid CategoryId { get; set; }
     }
 }

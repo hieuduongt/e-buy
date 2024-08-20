@@ -1,10 +1,10 @@
 ﻿using Application.ProductServices;
 using Domain.Dtos;
-using E_BUY.ImageService;
+using Application.ImageService;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Common;
 
-namespace E_BUY.Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("api/image")]
@@ -19,15 +19,23 @@ namespace E_BUY.Controllers
             _logger = logger;
             _imageService = imageService;
         }
-        [HttpGet]
-        [Route("/productId={productId}")]
-
-        public async Task<ActionResult<EBuyResponse<List<ImageResponseDto>>>> Get(Guid productId)
+        [HttpPost("upload")]
+        public async Task<ActionResult<EBuyResponse>> upload(IFormFile file)
         {
-            {
-                var results = await _imageService.Get(productId);
-                return Ok(results);
-            }
+            var result = await _imageService.UploadImage(file);
+            return Ok(result);
+        }
+        [HttpPost("uploads")]
+        public async Task<ActionResult<EBuyResponse>> uploads(List<IFormFile> file)
+        {
+            var result = await _imageService.UploadManyImage(file);
+            return Ok(result);
+        }
+        [HttpDelete]
+        public async Task<ActionResult<EBuyResponse>> Delete(Guid Id)
+        {
+            var result = await _imageService.Delete(Id);
+            return Ok(result);
         }
         [HttpGet]
         [Route("/image={imgaeId}")]
@@ -47,18 +55,6 @@ namespace E_BUY.Controllers
                 var results = await _imageService.GetAll();
                 return Ok(results);
             }
-        }
-        [HttpPost]
-        public async Task<ActionResult<EBuyResponse>>Create(ImageRequestDto reques)
-        {
-            var result = await _imageService.Create(reques);
-            return Ok(result);
-        }
-        [HttpDelete]
-        public async Task<ActionResult<EBuyResponse>> Delete(Guid Id)
-        {
-            var result = await _imageService.Delete(Id);
-            return Ok(result);
         }
     }
 }

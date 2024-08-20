@@ -11,16 +11,10 @@ namespace Application.ProductServices
     public interface IProductService
     {
         public Task<EBuyResponse<Paginated<ProductResponseDto>>> GetAll(string search, int page, int pageSize);
-
-        public Task<EBuyResponse<ProductResponseDto>>Get(Guid productId);
-
-        public Task<EBuyResponse>Create(ProductRequesDto productRequesDto);
-
+        public Task<EBuyResponse<ProductResponseDto>> Get(Guid productId);
+        public Task<EBuyResponse> Create(ProductRequesDto productRequesDto);
         public Task<EBuyResponse> Update(ProductRequesDto request);
-
         public Task<EBuyResponse> Delete(Guid productId);
-
-        public Task<EBuyResponse> Archive(Guid productId);
-        
+        public Task<EBuyResponse> Archive(Guid productId); 
     }
 }

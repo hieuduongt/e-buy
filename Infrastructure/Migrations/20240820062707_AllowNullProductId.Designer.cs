@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240820062707_AllowNullProductId")]
+    partial class AllowNullProductId
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -75,9 +78,8 @@ namespace Infrastructure.Migrations
                     b.Property<bool>("IsDeleted")
                         .HasColumnType("bit");
 
-                    b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier")
-                        .IsRequired(false);
+                    b.Property<Guid?>("ProductId")
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -371,21 +373,21 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("570431fa-36ab-45bc-b135-3f6060be55e0"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e5669e9c-1c42-42a2-900d-b39dbd51abdd",
+                            ConcurrencyStamp = "f356b3f1-8f55-4a44-aac1-ea11bb54fafb",
                             ConnectionId = "",
-                            CreatedDate = new DateTime(2024, 8, 19, 4, 48, 26, 89, DateTimeKind.Utc).AddTicks(7111),
+                            CreatedDate = new DateTime(2024, 8, 20, 6, 27, 5, 493, DateTimeKind.Utc).AddTicks(2751),
                             Email = "admin@ebuy.com",
                             EmailConfirmed = false,
                             IsEditBy = "",
-                            LastActiveDate = new DateTime(2024, 8, 19, 4, 48, 26, 89, DateTimeKind.Utc).AddTicks(7118),
+                            LastActiveDate = new DateTime(2024, 8, 20, 6, 27, 5, 493, DateTimeKind.Utc).AddTicks(2758),
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@ebuy.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG1+efvJxfbb3QsQOdgTGXwxxRlg6x8qLTOu9Q6rtKNcRwD4v2rxea7MbMzIpeX2Rw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEIqvwJt/tdDtexIYR++SUA6ZQu91xrRBe1QPrGyDF0Xagzw8m4YwFlcKMg+7jstloA==",
                             PhoneNumberConfirmed = false,
                             RefreshToken = "",
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "821d1bcf-3468-4560-9b8e-98a7b4bbf078",
+                            SecurityStamp = "fd9077f3-16a3-41a9-806b-d5003fb9053a",
                             TwoFactorEnabled = false,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
@@ -521,9 +523,7 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany("Images")
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ProductId");
 
                     b.Navigation("Product");
                 });

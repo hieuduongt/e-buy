@@ -5,7 +5,7 @@ using Domain.Dtos;
 using Microsoft.AspNetCore.Mvc;
 using Shared.Common;
 
-namespace E_BUY.Controllers
+namespace Api.Controllers
 {
     [ApiController]
     [Route("api/product")]

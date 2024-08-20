@@ -37,34 +37,24 @@ namespace Application.ProductServices
 
         public async Task<EBuyResponse> Create(ProductRequesDto productRequesDto)
         {
-            if (productRequesDto.image == null)
+
+            var listImageIds = productRequesDto.Images.Select(img => img.Id).ToList();
+            List<Image> images = new List<Image>();
+            bool isValidImages = true;
+
+            foreach(var imageId in listImageIds)
             {
-                productRequesDto.image = [new Image
-                    {
-                    Id = new Guid(),
-                       Url = "https://img.pikbest.com/origin/09/41/85/916pIkbEsTzRC.jpg!w700wp",
-                       ProductId = productRequesDto.Id
-                    }];
-                var NewproductNotImage = new Product
+                var img = await _dbContext.Images.FindAsync(imageId);
+                if (img == null || img.InUse)
                 {
-                    CategoryId = productRequesDto.CategoryId,
-                    Id = productRequesDto.Id,
-                    Name = productRequesDto.Name,
-                    Description = productRequesDto.Description,
-                    Quantity = productRequesDto.Quantity,
-                    OriginalPrice = productRequesDto.OriginalPrice,
-                    SalePrice = productRequesDto.SalePrice,
-                    Images =productRequesDto.image,
-                    SoldNumber = productRequesDto.SoldNumber,
-                    Currency = productRequesDto.Currency,
-                    CreatedDate = DateTime.UtcNow,
-                    IsArchived = false,
-                    IsDeleted = false,
-                    UpdatedDate = DateTime.UtcNow
-                };
-                await _dbContext.Products.AddAsync(NewproductNotImage);
-                await _dbContext.SaveChangesAsync();
-                return EBuyResponse.Success();
+                    isValidImages = false;
+                    break;
+                }
+                images.Add(img);
+            }
+            if(!isValidImages)
+            {
+                return EBuyResponse.Failed(new List<string> { "Hình ảnh không hợp lệ!"});
             }
             var Newproduct = new Product
             {
@@ -75,8 +65,7 @@ namespace Application.ProductServices
                 Quantity = productRequesDto.Quantity,
                 OriginalPrice = productRequesDto.OriginalPrice,
                 SalePrice = productRequesDto.SalePrice,
-                Images = productRequesDto.image,
-                SoldNumber = productRequesDto.SoldNumber,
+                Images = images,
                 Currency = productRequesDto.Currency,
                 CreatedDate = DateTime.UtcNow,
                 IsArchived = false,
@@ -138,7 +127,7 @@ namespace Application.ProductServices
                     UpdatedDate = p.UpdatedDate,
                     OriginalPrice = p.OriginalPrice,
                     SalePrice = p.SalePrice,
-                    image = p.Images,
+                    Images = p.Images,
                     IsDeleted = p.IsDeleted,
                     IsArchived = p.IsArchived,
                     Currency = p.Currency,
@@ -172,15 +161,16 @@ namespace Application.ProductServices
                                                             UpdatedDate = p.UpdatedDate,
                                                             OriginalPrice = p.OriginalPrice,
                                                             SalePrice = p.SalePrice,
-                                                            image = p.Images,
+                                                            Images = p.Images,
                                                             IsDeleted = p.IsDeleted,
                                                             IsArchived = p.IsArchived,
                                                             Currency = p.Currency,
                                                             SoldNumber = p.SoldNumber,
                                                             Category = p.Category,
+                                                            Likes = p.Likes
                                                         }).ToListAsync();
 
-            if (resultsSeach.Count == 0)
+            if (resultsSeach.Count() == 0)
             {
                 return EBuyResponse<Paginated<ProductResponseDto>>.Failed(new List<string> { "Không tìm thấy sản phẩm nào" });
             }
@@ -207,12 +197,10 @@ namespace Application.ProductServices
                 return await _dbContext.Products
                     .Where(c => !c.IsDeleted && !c.IsArchived)
                     .CountAsync(
-                    p => p.Name.ToLower().Contains(search.ToLower()) ||
-                         p.CreatedDate.ToString().ToLower().Equals(search.ToLower()) ||
-                         p.Quantity.ToString().Contains(search.ToLower()) ||
-                         (p.Category != null && p.Category.Name.ToLower().Contains(search.ToLower())) ||
-                         p.UpdatedDate.ToString().ToLower().Equals(search.ToLower()) ||
-                         p.Images.Any(i => i.Url.ToLower().Contains(search.ToLower()))
+                    p => p.Name.ToLower().Contains(search) ||
+                         p.Quantity.ToString().Contains(search) ||
+                         (p.Category != null && p.Category.Name.ToLower().Contains(search)) ||
+                         p.Images.Any(i => i.Url.ToLower().Contains(search))
                 );
             }
             catch (Exception)

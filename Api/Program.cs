@@ -1,8 +1,9 @@
 using Application.CategoryServices;
 using Application.ProductServices;
-using E_BUY.ImageService;
+using Application.ImageService;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +40,13 @@ app.UseCors(builder =>
     .AllowAnyHeader()
     .AllowCredentials();
 });
+//
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath,$"{Environment.CurrentDirectory}/../Shared/Images"))
+});
+
 app.UseAuthorization();
 
 app.MapControllers();

@@ -1,4 +1,4 @@
-﻿ using static Shared.Common.Enum;
+﻿using static Shared.Common.Enum;
 
 namespace Domain.Entities
 {
@@ -12,8 +12,9 @@ namespace Domain.Entities
         public Currency Currency { get; set; }
         public int SoldNumber { get; set; }
         public Guid CategoryId { get; set; }
-        public Category Category { get; set; } 
+        public Category Category { get; set; }
         public List<Image> Images { get; set; }
         public List<Order> Orders { get; set; }
+        public List<Like> Likes { get; set; }
     }
 }
