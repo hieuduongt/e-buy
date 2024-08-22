@@ -4,6 +4,7 @@ using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDBContext))]
-    partial class AppDBContextModelSnapshot : ModelSnapshot
+    [Migration("20240817060537_add-inuse-field")]
+    partial class addinusefield
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -76,8 +79,7 @@ namespace Infrastructure.Migrations
                         .HasColumnType("bit");
 
                     b.Property<Guid>("ProductId")
-                        .HasColumnType("uniqueidentifier")
-                        .IsRequired(false);
+                        .HasColumnType("uniqueidentifier");
 
                     b.Property<DateTime>("UpdatedDate")
                         .HasColumnType("datetime2");
@@ -91,39 +93,6 @@ namespace Infrastructure.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Images");
-                });
-
-            modelBuilder.Entity("Domain.Entities.Like", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsArchived")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("UpdatedDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid?>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid?>("productId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.HasIndex("productId");
-
-                    b.ToTable("Likes");
                 });
 
             modelBuilder.Entity("Domain.Entities.Order", b =>
@@ -371,21 +340,21 @@ namespace Infrastructure.Migrations
                         {
                             Id = new Guid("570431fa-36ab-45bc-b135-3f6060be55e0"),
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "e5669e9c-1c42-42a2-900d-b39dbd51abdd",
+                            ConcurrencyStamp = "d6ab12d1-680f-4e8b-9f60-58777fd86d73",
                             ConnectionId = "",
-                            CreatedDate = new DateTime(2024, 8, 19, 4, 48, 26, 89, DateTimeKind.Utc).AddTicks(7111),
+                            CreatedDate = new DateTime(2024, 8, 17, 6, 5, 32, 403, DateTimeKind.Utc).AddTicks(5804),
                             Email = "admin@ebuy.com",
                             EmailConfirmed = false,
                             IsEditBy = "",
-                            LastActiveDate = new DateTime(2024, 8, 19, 4, 48, 26, 89, DateTimeKind.Utc).AddTicks(7118),
+                            LastActiveDate = new DateTime(2024, 8, 17, 6, 5, 32, 403, DateTimeKind.Utc).AddTicks(5809),
                             LockoutEnabled = false,
                             NormalizedEmail = "admin@ebuy.com",
                             NormalizedUserName = "admin",
-                            PasswordHash = "AQAAAAIAAYagAAAAEG1+efvJxfbb3QsQOdgTGXwxxRlg6x8qLTOu9Q6rtKNcRwD4v2rxea7MbMzIpeX2Rw==",
+                            PasswordHash = "AQAAAAIAAYagAAAAEHUjJAyykQLmnJ0P/9RbnqCcqKuA9ZS5msD4DtIQnjCIh0jZhMsn0T0Gq88iddMkdg==",
                             PhoneNumberConfirmed = false,
                             RefreshToken = "",
                             RefreshTokenExpiryTime = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            SecurityStamp = "821d1bcf-3468-4560-9b8e-98a7b4bbf078",
+                            SecurityStamp = "3504234a-e833-4124-a09d-eba508fc48fa",
                             TwoFactorEnabled = false,
                             UpdatedDate = new DateTime(1, 1, 1, 0, 0, 0, 0, DateTimeKind.Unspecified),
                             UserName = "admin"
@@ -528,21 +497,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("Domain.Entities.Like", b =>
-                {
-                    b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("Likes")
-                        .HasForeignKey("UserId");
-
-                    b.HasOne("Domain.Entities.Product", "Product")
-                        .WithMany("Likes")
-                        .HasForeignKey("productId");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("Domain.Entities.Order", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
@@ -637,14 +591,10 @@ namespace Infrastructure.Migrations
             modelBuilder.Entity("Domain.Entities.Product", b =>
                 {
                     b.Navigation("Images");
-
-                    b.Navigation("Likes");
                 });
 
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
-                    b.Navigation("Likes");
-
                     b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618

@@ -13,5 +13,6 @@ namespace Domain.Entities
         public string ConnectionId { get; set; } = string.Empty;
         public List<Role> Roles { get; set; } = new List<Role>();
         public List<Order>? Orders { get; set; }
+        public List<Like>? Likes { get; set; }
     }
 }

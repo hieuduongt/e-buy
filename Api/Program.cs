@@ -1,11 +1,16 @@
 using Application.CategoryServices;
+using Application.ProductServices;
+using Application.ImageService;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddScoped<ICategoryServices, CategoryServices>();
+builder.Services.AddScoped<IProductService,ProductService>();
+builder.Services.AddScoped<IImageService, ImageService>();
 builder.Services.AddDbContext<AppDBContext>(options =>
             options.UseSqlServer(builder.Configuration.GetConnectionString("Development")));
 builder.Services.AddControllers();
@@ -35,6 +40,13 @@ app.UseCors(builder =>
     .AllowAnyHeader()
     .AllowCredentials();
 });
+//
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(
+           Path.Combine(builder.Environment.ContentRootPath,$"{Environment.CurrentDirectory}/../Shared/Images"))
+});
+
 app.UseAuthorization();
 
 app.MapControllers();

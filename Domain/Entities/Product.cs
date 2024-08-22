@@ -15,5 +15,6 @@ namespace Domain.Entities
         public Category Category { get; set; }
         public List<Image> Images { get; set; }
         public List<Order> Orders { get; set; }
+        public List<Like> Likes { get; set; }
     }
 }
